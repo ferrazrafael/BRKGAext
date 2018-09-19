@@ -2,7 +2,8 @@
  * BRKGAext.h
  *
  *  Created on: 29 de jun de 2018
- *      Author: ferra
+ *      Author: Rafael Louback Ferraz <ferrazrafael@yahoo.com.br>
+ *
  */
 
 #ifndef BRKGAEXT_H_
