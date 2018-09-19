@@ -1,2 +1,2 @@
 # BRKGAext
-Extension to the BRKGA API proposed by Mauricio G. C. Resende
+Extension to the BRKGA API, originally proposed by Mauricio G. C. Resende
