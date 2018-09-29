@@ -28,10 +28,7 @@ double SampleDecoder::decode(const std::vector< double >& chromosome) const {
 	for(std::vector< std::pair< double, unsigned > >::const_iterator i = ranking.begin();
 			i != ranking.end(); ++i) {
 		permutation.push_back(i->second);
-		//std::cout << "(" << i->first << "," << i->second << ") ";
 	}
-	//std::cout << std:: endl;
-	//exit(1);
 
 	// sample fitness is the first allele
 	return chromosome.front();
