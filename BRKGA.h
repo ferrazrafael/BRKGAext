@@ -48,6 +48,7 @@
 #include <algorithm>
 #include <exception>
 #include <stdexcept>
+#include <cmath>
 #include "Population.h"
 
 template< class Decoder, class RNG >

@@ -15,8 +15,7 @@
 
 using namespace std;
 
-KnapsackDecoder::KnapsackDecoder(unsigned _n, std::vector<double> _values, std::vector<double> _weights, double _W)
-: n(_n), values(_values), weights(_weights), W(_W) {
+KnapsackDecoder::KnapsackDecoder(const Knapsack& _knapsack) : knapsack(_knapsack) {
 	// TODO Auto-generated constructor stub
 }
 
@@ -25,6 +24,19 @@ KnapsackDecoder::~KnapsackDecoder() {
 }
 
 double KnapsackDecoder::decode(vector<double>& chromosome) const {
+	vector<bool> selection  = getSolution(chromosome);
+
+	double value_sum = 0.0;
+	for(unsigned i = 0; i < selection.size(); ++i){
+		if(selection[i]){
+			value_sum += knapsack.getValue(i);
+		}
+	}
+
+	return value_sum;
+}
+
+vector<bool> KnapsackDecoder::getSolution(std::vector<double>& chromosome) const {
 	vector<bool> selection;
 
 	for(vector<double>::const_iterator itKey = chromosome.begin(); itKey != chromosome.end(); ++itKey){
@@ -32,54 +44,31 @@ double KnapsackDecoder::decode(vector<double>& chromosome) const {
 	}
 
 	double weight_sum = 0.0;
-	double value_sum = 0.0;
 	for(unsigned i = 0; i < selection.size(); ++i){
 		if(selection[i]){
-			weight_sum += weights[i];
+			weight_sum += knapsack.getWeight(i);
 		}
 	}
 
-	if(weight_sum > W){
+	if(weight_sum > knapsack.getW()){
 		adjustSelection(selection);
 		correctChromosome(chromosome, selection);
 	}
 
-	for(unsigned i = 0; i < selection.size(); ++i){
-		if(selection[i]){
-			value_sum += values[i];
-		}
-	}
-
-	return value_sum;
-}
-
-unsigned KnapsackDecoder::getN() const {
-	return n;
-}
-
-const std::vector<double>& KnapsackDecoder::getValues() const {
-	return values;
-}
-
-double KnapsackDecoder::getW() const {
-	return W;
-}
-
-const std::vector<double>& KnapsackDecoder::getWeights() const {
-	return weights;
+	return selection;
 }
 
 void KnapsackDecoder::adjustSelection(vector<bool>& selection) const {
-	vector<unsigned> items(n);
+	vector<unsigned> items(knapsack.getN());
 	fill(selection.begin(), selection.end(), false);
 
 	iota(items.begin(), items.end(), 0); // initialize vector with increasing values
 
-	shuffle(items.begin(), items.end(), default_random_engine(0));
+	random_shuffle(items.begin(), items.end());
 	double weight_sum = 0.0;
 	for(unsigned i = 0; i < items.size(); ++i){
-		if(weight_sum + weights[i] < W){
-			weight_sum += weights[i];
+		if(weight_sum + knapsack.getWeight(i) < knapsack.getW()){
+			weight_sum += knapsack.getWeight(i);
 			selection[ items[i] ] = true;
 		}
 		else{

@@ -9,26 +9,22 @@
 #define KNAPSACKDECODER_H_
 
 #include <vector>
+#include "Knapsack.h"
 
 class KnapsackDecoder {
 public:
-	KnapsackDecoder(unsigned n, std::vector<double> values, std::vector<double> weights, double W);
+	KnapsackDecoder(const Knapsack& knapsack);
 	virtual ~KnapsackDecoder();
 
 	double decode(std::vector<double>& chromosome) const;
-	unsigned getN() const;
-	const std::vector<double>& getValues() const;
-	double getW() const;
-	const std::vector<double>& getWeights() const;
+	std::vector<bool> getSolution(std::vector<double>& chromosome) const;
+	void correctChromosome(std::vector<double>& chromosome, std::vector<bool>& selection) const;
 
 protected:
-	unsigned n; // number of items
-	std::vector<double> values; // value of each item 'i'
-	std::vector<double> weights; // weight of each item 'i'
-	double W; // max weight supported by the Knapsack
-
+	const Knapsack knapsack;
 	void adjustSelection(std::vector<bool>& selection) const;
-	void correctChromosome(std::vector<double>& chromosome, std::vector<bool>& selection) const;
+
 };
+
 
 #endif /* KNAPSACKDECODER_H_ */
