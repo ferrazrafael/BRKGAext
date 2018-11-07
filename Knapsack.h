@@ -1,8 +1,8 @@
 /*
  * Knapsack.h
  *
- *  Created on: 4 de out de 2018
- *      Author: ferra
+ *  Created on: Oct 4, 2018
+ *      Author: Rafael Louback Ferraz <ferrazrafael@yahoo.com.br>
  */
 
 #ifndef KNAPSACK_H_

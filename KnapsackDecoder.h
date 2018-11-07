@@ -1,7 +1,7 @@
 /*
  * Knapsack.h
  *
- *  Created on: 26 de set de 2018
+ *  Created on: Sep 26, 2018
  *      Author: Rafael Louback Ferraz <ferrazrafael@yahoo.com.br>
  */
 
