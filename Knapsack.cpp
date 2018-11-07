@@ -56,7 +56,7 @@ vector<bool> twoSwap(const vector<bool>& selection, const Knapsack& knapsack) {
 
 	double bestValue = value;
 	for(unsigned i = 0; i < selection.size(); ++i){
-		for(unsigned j = 1; j < selection.size(); ++j){
+		for(unsigned j = i+1; j < selection.size(); ++j){
 			swap(s[i], s[j]);
 			value -= values[i] * selection[i];
 			value -= values[j] * selection[j];
