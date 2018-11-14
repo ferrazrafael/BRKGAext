@@ -17,12 +17,16 @@ public:
 	virtual ~KnapsackDecoder();
 
 	double decode(std::vector<double>& chromosome) const;
-	std::vector<bool> getSolution(std::vector<double>& chromosome) const;
-	void correctChromosome(std::vector<double>& chromosome, std::vector<bool>& selection) const;
+	double computeFitness(const std::vector<bool>& solution) const;
+	std::vector<bool> computeSolution(std::vector<double>& chromosome) const;
+	void correctChromosome(std::vector<double>& chromosome, std::vector<bool>& solution) const;
+
+	// Local Search
+	std::vector<bool> twoSwap(const std::vector<bool>& selection);
 
 protected:
 	const Knapsack knapsack;
-	void adjustSelection(std::vector<bool>& selection) const;
+	void adjustSolution(std::vector<bool>& solution) const;
 
 };
 

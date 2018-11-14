@@ -31,7 +31,6 @@ protected:
 	double W; // max weight supported by the Knapsack
 };
 
-// Local Search
-std::vector<bool> twoSwap(const std::vector<bool>& selection, const Knapsack& knapsack);
+
 
 #endif /* KNAPSACK_H_ */

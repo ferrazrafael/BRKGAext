@@ -24,11 +24,37 @@ KnapsackDecoder::~KnapsackDecoder() {
 }
 
 double KnapsackDecoder::decode(vector<double>& chromosome) const {
-	vector<bool> selection  = getSolution(chromosome);
+	vector<bool> solution  = computeSolution(chromosome);
 
+	return computeFitness(solution);
+}
+
+vector<bool> KnapsackDecoder::computeSolution(std::vector<double>& chromosome) const {
+	vector<bool> solution;
+
+	for(vector<double>::const_iterator itKey = chromosome.begin(); itKey != chromosome.end(); ++itKey){
+		solution.push_back( *itKey > 0.5 );
+	}
+
+	double weight_sum = 0.0;
+	for(unsigned i = 0; i < solution.size(); ++i){
+		if(solution[i]){
+			weight_sum += knapsack.getWeight(i);
+		}
+	}
+
+	if(weight_sum > knapsack.getW()){
+		adjustSolution(solution);
+		correctChromosome(chromosome, solution);
+	}
+
+	return solution;
+}
+
+double KnapsackDecoder::computeFitness(const std::vector<bool>& solution) const {
 	double value_sum = 0.0;
-	for(unsigned i = 0; i < selection.size(); ++i){
-		if(selection[i]){
+	for(unsigned i = 0; i < solution.size(); ++i){
+		if(solution[i]){
 			value_sum += knapsack.getValue(i);
 		}
 	}
@@ -36,31 +62,9 @@ double KnapsackDecoder::decode(vector<double>& chromosome) const {
 	return value_sum;
 }
 
-vector<bool> KnapsackDecoder::getSolution(std::vector<double>& chromosome) const {
-	vector<bool> selection;
-
-	for(vector<double>::const_iterator itKey = chromosome.begin(); itKey != chromosome.end(); ++itKey){
-		selection.push_back( *itKey > 0.5 );
-	}
-
-	double weight_sum = 0.0;
-	for(unsigned i = 0; i < selection.size(); ++i){
-		if(selection[i]){
-			weight_sum += knapsack.getWeight(i);
-		}
-	}
-
-	if(weight_sum > knapsack.getW()){
-		adjustSelection(selection);
-		correctChromosome(chromosome, selection);
-	}
-
-	return selection;
-}
-
-void KnapsackDecoder::adjustSelection(vector<bool>& selection) const {
+void KnapsackDecoder::adjustSolution(vector<bool>& solution) const {
 	vector<unsigned> items(knapsack.getN());
-	fill(selection.begin(), selection.end(), false);
+	fill(solution.begin(), solution.end(), false);
 
 	iota(items.begin(), items.end(), 0); // initialize vector with increasing values
 
@@ -69,7 +73,7 @@ void KnapsackDecoder::adjustSelection(vector<bool>& selection) const {
 	for(unsigned i = 0; i < items.size(); ++i){
 		if(weight_sum + knapsack.getWeight(i) < knapsack.getW()){
 			weight_sum += knapsack.getWeight(i);
-			selection[ items[i] ] = true;
+			solution[ items[i] ] = true;
 		}
 		else{
 			break;
@@ -77,9 +81,9 @@ void KnapsackDecoder::adjustSelection(vector<bool>& selection) const {
 	}
 }
 
-void KnapsackDecoder::correctChromosome(vector<double>& chromosome, vector<bool>& selection) const {
+void KnapsackDecoder::correctChromosome(vector<double>& chromosome, vector<bool>& solution) const {
 	for(unsigned i = 0; i < chromosome.size(); ++i){
-		if(selection[i]){
+		if(solution[i]){
 			if(chromosome[i] <= 0.5){
 				chromosome[i] += 0.5;
 			}
@@ -90,4 +94,33 @@ void KnapsackDecoder::correctChromosome(vector<double>& chromosome, vector<bool>
 			}
 		}
 	}
+}
+
+vector<bool> KnapsackDecoder::twoSwap(const vector<bool>& selection){
+	vector<bool> s = selection;
+	double value = 0.0;
+	double weight = 0.0;
+	const vector<double>& values = knapsack.getValues();
+	const vector<double>& weights = knapsack.getWeights();
+
+	for(unsigned i = 0; i < selection.size(); ++i){
+		value += values[i] * selection[i];
+		weight += weights[i] * selection[i];
+	}
+
+	double bestValue = value;
+	for(unsigned i = 0; i < selection.size(); ++i){
+		for(unsigned j = i+1; j < selection.size(); ++j){
+			swap(s[i], s[j]);
+
+			if(weight < knapsack.getW() && value > bestValue){
+				bestValue = value;
+			}
+			else{
+				swap(s[j], s[i]);
+			}
+		}
+	}
+
+	return s;
 }
