@@ -18,7 +18,7 @@ public:
 
 	double decode(std::vector<double>& chromosome) const;
 	double computeFitness(const std::vector<bool>& solution) const;
-	std::vector<bool> computeSolution(std::vector<double>& chromosome) const;
+	std::vector<bool> decodeSolution(std::vector<double>& chromosome) const;
 	void correctChromosome(std::vector<double>& chromosome, std::vector<bool>& solution) const;
 
 	// Local Search

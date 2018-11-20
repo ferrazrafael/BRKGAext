@@ -24,12 +24,12 @@ KnapsackDecoder::~KnapsackDecoder() {
 }
 
 double KnapsackDecoder::decode(vector<double>& chromosome) const {
-	vector<bool> solution  = computeSolution(chromosome);
+	vector<bool> solution  = decodeSolution(chromosome);
 
 	return computeFitness(solution);
 }
 
-vector<bool> KnapsackDecoder::computeSolution(std::vector<double>& chromosome) const {
+vector<bool> KnapsackDecoder::decodeSolution(std::vector<double>& chromosome) const {
 	vector<bool> solution;
 
 	for(vector<double>::const_iterator itKey = chromosome.begin(); itKey != chromosome.end(); ++itKey){

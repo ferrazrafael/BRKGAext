@@ -266,7 +266,7 @@ template<typename SolutionType>
 void BRKGAext<Decoder, RNG>::applyHeuristic(std::function< SolutionType (const SolutionType&) > heuristic) {
 	for(int i = 0; i < int(K); ++i) {
 		for(int j = 0; j < int(p); ++j) {
-			SolutionType solution = refDecoder.computeSolution((*current[i])(j)) ;
+			SolutionType solution = refDecoder.decodeSolution((*current[i])(j)) ;
 			solution = heuristic(solution);
 			refDecoder.correctChromosome((*current[i])(j), solution);
 			current[i]->setFitness(j, refDecoder.decode((*current[i])(j)));
