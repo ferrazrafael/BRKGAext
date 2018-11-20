@@ -16,11 +16,9 @@
 using namespace std;
 
 KnapsackDecoder::KnapsackDecoder(const Knapsack& _knapsack) : knapsack(_knapsack) {
-	// TODO Auto-generated constructor stub
 }
 
 KnapsackDecoder::~KnapsackDecoder() {
-	// TODO Auto-generated destructor stub
 }
 
 double KnapsackDecoder::decode(vector<double>& chromosome) const {

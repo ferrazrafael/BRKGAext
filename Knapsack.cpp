@@ -11,11 +11,9 @@ using namespace std;
 
 Knapsack::Knapsack(unsigned _n, const vector<double>& _values, const vector<double>& _weights, double _W) :
 			n(_n), values(_values), weights(_weights), W(_W) {
-
 }
 
 Knapsack::~Knapsack() {
-	// TODO Auto-generated destructor stub
 }
 
 double Knapsack::getValue(unsigned i) const {
