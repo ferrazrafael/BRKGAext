@@ -79,7 +79,7 @@ void KnapsackDecoder::adjustSolution(vector<bool>& solution) const {
 	}
 }
 
-void KnapsackDecoder::correctChromosome(vector<double>& chromosome, vector<bool>& solution) const {
+void KnapsackDecoder::correctChromosome(vector<double>& chromosome, const vector<bool>& solution) const {
 	for(unsigned i = 0; i < chromosome.size(); ++i){
 		if(solution[i]){
 			if(chromosome[i] <= 0.5){

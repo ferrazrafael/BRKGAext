@@ -16,3 +16,14 @@ Permutation::~Permutation() {
 	// TODO Auto-generated destructor stub
 }
 
+const std::vector<ItemType>& Permutation::getItems() const {
+	return items;
+}
+
+ItemType Permutation::getItem(unsigned i) const {
+	return items[i];
+}
+
+unsigned Permutation::getN() const {
+	return n;
+}
