@@ -22,7 +22,7 @@ public:
 	void correctChromosome(std::vector<double>& chromosome, std::vector<bool>& solution) const;
 
 	// Local Search
-	std::vector<bool> twoSwap(const std::vector<bool>& selection);
+	std::vector<bool> twoSwap(const std::vector<bool>& solution);
 
 protected:
 	const Knapsack knapsack;

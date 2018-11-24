@@ -94,21 +94,21 @@ void KnapsackDecoder::correctChromosome(vector<double>& chromosome, vector<bool>
 	}
 }
 
-vector<bool> KnapsackDecoder::twoSwap(const vector<bool>& selection){
-	vector<bool> s = selection;
+vector<bool> KnapsackDecoder::twoSwap(const vector<bool>& solution){
+	vector<bool> s = solution;
 	double value = 0.0;
 	double weight = 0.0;
 	const vector<double>& values = knapsack.getValues();
 	const vector<double>& weights = knapsack.getWeights();
 
-	for(unsigned i = 0; i < selection.size(); ++i){
-		value += values[i] * selection[i];
-		weight += weights[i] * selection[i];
+	for(unsigned i = 0; i < solution.size(); ++i){
+		value += values[i] * solution[i];
+		weight += weights[i] * solution[i];
 	}
 
 	double bestValue = value;
-	for(unsigned i = 0; i < selection.size(); ++i){
-		for(unsigned j = i+1; j < selection.size(); ++j){
+	for(unsigned i = 0; i < solution.size(); ++i){
+		for(unsigned j = i+1; j < solution.size(); ++j){
 			swap(s[i], s[j]);
 
 			if(weight < knapsack.getW() && value > bestValue){

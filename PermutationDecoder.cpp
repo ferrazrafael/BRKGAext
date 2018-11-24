@@ -16,20 +16,23 @@ PermutationDecoder::~PermutationDecoder() {
 }
 
 double PermutationDecoder::decode(std::vector<double>& chromosome) const {
+	vector<unsigned> solution  = decodeSolution(chromosome);
+
+	return computeFitness(solution);
 }
 
-double PermutationDecoder::computeFitness(const std::vector<bool>& solution) const {
+double PermutationDecoder::computeFitness(const std::vector<unsigned>& solution) const {
 	// TODO API user implements fitness computation based on problem data
 }
 
-vector<bool> PermutationDecoder::decodeSolution(vector<double>& chromosome) const {
+vector<unsigned> PermutationDecoder::decodeSolution(vector<double>& chromosome) const {
 }
 
-void PermutationDecoder::correctChromosome(vector<double>& chromosome, vector<bool>& solution) const {
+void PermutationDecoder::correctChromosome(vector<double>& chromosome, vector<unsigned>& solution) const {
 }
 
-vector<bool> PermutationDecoder::twoSwap(const vector<bool>& selection) {
+vector<unsigned> PermutationDecoder::twoSwap(const vector<unsigned>& solution) {
 }
 
-void PermutationDecoder::adjustSolution(vector<bool>& solution) const {
+void PermutationDecoder::adjustSolution(vector<unsigned>& solution) const {
 }

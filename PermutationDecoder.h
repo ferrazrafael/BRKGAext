@@ -17,16 +17,16 @@ public:
 	virtual ~PermutationDecoder();
 
 	double decode(std::vector<double>& chromosome) const;
-	double computeFitness(const std::vector<bool>& solution) const;
-	std::vector<bool> decodeSolution(std::vector<double>& chromosome) const;
-	void correctChromosome(std::vector<double>& chromosome, std::vector<bool>& solution) const;
+	double computeFitness(const std::vector<unsigned>& solution) const;
+	std::vector<unsigned> decodeSolution(std::vector<double>& chromosome) const;
+	void correctChromosome(std::vector<double>& chromosome, std::vector<unsigned>& solution) const;
 
 	// Local Search
-	std::vector<bool> twoSwap(const std::vector<bool>& selection);
+	std::vector<unsigned> twoSwap(const std::vector<unsigned>& solution);
 
 protected:
 	const Permutation permutation;
-	void adjustSolution(std::vector<bool>& solution) const;
+	void adjustSolution(std::vector<unsigned>& solution) const;
 };
 
 #endif /* PERMUTATIONDECODER_H_ */
