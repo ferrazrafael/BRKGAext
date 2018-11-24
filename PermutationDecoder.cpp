@@ -1,7 +1,7 @@
 /*
  * PermutationDecoder.cpp
  *
- *  Created on: 20 de nov de 2018
+ *  Created on: Nov 20, 2018
  *      Author: Rafael Louback Ferraz <ferrazrafael@yahoo.com.br>
  */
 
@@ -18,8 +18,8 @@ PermutationDecoder::~PermutationDecoder() {
 double PermutationDecoder::decode(std::vector<double>& chromosome) const {
 }
 
-double PermutationDecoder::computeFitness(
-		const std::vector<bool>& solution) const {
+double PermutationDecoder::computeFitness(const std::vector<bool>& solution) const {
+	// TODO API user implements fitness computation based on problem data
 }
 
 vector<bool> PermutationDecoder::decodeSolution(vector<double>& chromosome) const {

@@ -1,7 +1,7 @@
 /*
  * PermutationDecoder.h
  *
- *  Created on: 20 de nov de 2018
+ *  Created on: Nov 20, 2018
  *      Author: Rafael Louback Ferraz <ferrazrafael@yahoo.com.br>
  */
 
