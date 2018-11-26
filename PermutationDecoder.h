@@ -20,6 +20,7 @@ public:
 	double computeFitness(const std::vector<ItemType>& solution) const;
 	std::vector<ItemType> decodeSolution(std::vector<double>& chromosome) const;
 	void correctChromosome(std::vector<double>& chromosome, const std::vector<ItemType>& solution) const;
+	bool isValid(const std::vector<ItemType>& solution);
 
 	// Local Search
 	std::vector<unsigned> twoSwap(const std::vector<ItemType>& solution);

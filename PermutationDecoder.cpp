@@ -86,9 +86,15 @@ vector<ItemType> PermutationDecoder::twoSwap(const vector<ItemType>& solution) {
 	for(unsigned i = 0; i < solution.size(); ++i){
 		for(unsigned j = i+1; j < solution.size(); ++j){
 			swap(s[i], s[j]);
-			double fitness = computeFitness(s);
-			if(fitness > bestFitness){
-				bestFitness = fitness;
+
+			if(isValid(s)){
+				double fitness = computeFitness(s);
+				if(fitness > bestFitness){
+					bestFitness = fitness;
+				}
+				else{
+					swap(s[j], s[i]);
+				}
 			}
 			else{
 				swap(s[j], s[i]);
@@ -97,6 +103,10 @@ vector<ItemType> PermutationDecoder::twoSwap(const vector<ItemType>& solution) {
 	}
 
 	return s;
+}
+
+bool PermutationDecoder::isValid(const std::vector<ItemType>& solution) {
+	// TODO implement problem requirements validation
 }
 
 void PermutationDecoder::adjustSolution(vector<ItemType>& solution) const {

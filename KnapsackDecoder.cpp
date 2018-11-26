@@ -60,6 +60,15 @@ double KnapsackDecoder::computeFitness(const std::vector<bool>& solution) const 
 	return value_sum;
 }
 
+bool KnapsackDecoder::isValid(const std::vector<bool>& solution) {
+	double weight = 0.0;
+	for(unsigned i = 0; i < solution.size(); ++i){
+		weight += knapsack.getWeight(i) * solution[i];
+	}
+
+	return weight <= knapsack.getW();
+}
+
 void KnapsackDecoder::adjustSolution(vector<bool>& solution) const {
 	vector<unsigned> items(knapsack.getN());
 	fill(solution.begin(), solution.end(), false);
@@ -101,24 +110,28 @@ vector<bool> KnapsackDecoder::twoSwap(const vector<bool>& solution){
 	const vector<double>& values = knapsack.getValues();
 	const vector<double>& weights = knapsack.getWeights();
 
-	for(unsigned i = 0; i < solution.size(); ++i){
-		value += values[i] * solution[i];
-		weight += weights[i] * solution[i];
-	}
 
-	double bestValue = value;
+
+	double bestFitness = computeFitness(solution);
 	for(unsigned i = 0; i < solution.size(); ++i){
 		for(unsigned j = i+1; j < solution.size(); ++j){
 			swap(s[i], s[j]);
 
-			if(weight < knapsack.getW() && value > bestValue){
-				bestValue = value;
+			if(isValid(s)){ // checks if solution meets problem requirements
+				double fitness = computeFitness(s);
+				if(weight < knapsack.getW() && fitness > bestFitness){
+					bestFitness = fitness;
+				}
+				else{
+					swap(s[j], s[i]);
+				}
 			}
 			else{
 				swap(s[j], s[i]);
 			}
 		}
 	}
+
 
 	return s;
 }
