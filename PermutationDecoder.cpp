@@ -106,8 +106,9 @@ vector<ItemType> PermutationDecoder::twoSwap(const vector<ItemType>& solution) {
 }
 
 bool PermutationDecoder::isValid(const std::vector<ItemType>& solution) {
-	// TODO implement problem requirements validation
+	// TODO Implement problem requirements validation
 }
 
 void PermutationDecoder::adjustSolution(vector<ItemType>& solution) const {
+	// TODO Implement to adjust invalid solution
 }
