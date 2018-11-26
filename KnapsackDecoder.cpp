@@ -107,10 +107,6 @@ vector<bool> KnapsackDecoder::twoSwap(const vector<bool>& solution){
 	vector<bool> s = solution;
 	double value = 0.0;
 	double weight = 0.0;
-	const vector<double>& values = knapsack.getValues();
-	const vector<double>& weights = knapsack.getWeights();
-
-
 
 	double bestFitness = computeFitness(solution);
 	for(unsigned i = 0; i < solution.size(); ++i){
