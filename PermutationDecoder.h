@@ -23,7 +23,10 @@ public:
 	bool isValid(const std::vector<ItemType>& solution);
 
 	// Local Search
-	std::vector<unsigned> twoSwap(const std::vector<ItemType>& solution);
+	std::vector<ItemType> twoSwap(const std::vector<ItemType>& solution);
+	std::vector<ItemType> kSwap(const std::vector<ItemType>& solution);
+	std::vector<ItemType> bestInsertion(const std::vector<ItemType>& solution);
+	std::vector<ItemType> twoOpt(const std::vector<ItemType>& solution);
 
 protected:
 	const Permutation permutation;
