@@ -23,7 +23,8 @@ double PermutationDecoder::decode(std::vector<double>& chromosome) const {
 	return computeFitness(solution);
 }
 
-double PermutationDecoder::computeFitness(const std::vector<ItemType>& solution) const {
+template <typename SolutionContainer>
+double PermutationDecoder::computeFitness(const SolutionContainer& solution) const {
 	// TODO API user implements fitness computation based on problem data
 }
 
@@ -179,7 +180,7 @@ vector<ItemType> PermutationDecoder::kSwap(const vector<ItemType>& solution, uns
 }
 
 vector<ItemType> PermutationDecoder::bestInsertion(const vector<ItemType>& solution) {
-	list<ItemType> solutionList(solution.begin(), solution.end()); // copies solution elements to s list
+	list<ItemType> sList(solution.begin(), solution.end()); // copies solution elements to s list
 
 	vector<ItemType> items = solution;
 	random_shuffle(items.begin(), items.end());
@@ -187,21 +188,20 @@ vector<ItemType> PermutationDecoder::bestInsertion(const vector<ItemType>& solut
 	vector<ItemType> s = solution;
 	double bestFitness = computeFitness(solution);
 	for(unsigned i = 0; i < items.size(); ++i){
-		list<ItemType>::iterator pos = find(solutionList.begin(), solutionList.end(), items[i]);
-		solutionList.erase(pos);
+		list<ItemType>::iterator pos = find(sList.begin(), sList.end(), items[i]);
+		sList.erase(pos);
 
-		for(list<ItemType>::iterator it = solutionList.begin(); it != solutionList.end(); ++it){
-			solutionList.insert(it, items[i]);
-			vector<ItemType> solutionVector(solutionList.begin(), solutionList.end());
-			double fitness = computeFitness(solutionVector);
+		for(list<ItemType>::iterator it = sList.begin(); it != sList.end(); ++it){
+			sList.insert(it, items[i]);
+			double fitness = computeFitness(sList);
 			if(fitness > bestFitness){
 				bestFitness = fitness;
-				s = solutionVector;
+				copy(sList.begin(), sList.begin(), s.begin());
 			}
-			solutionList.remove(items[i]);
+			sList.remove(items[i]);
 		}
 
-		solutionList.insert(--pos, items[i]);
+		sList.insert(--pos, items[i]);
 	}
 
 	return s;
