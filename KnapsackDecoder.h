@@ -17,7 +17,8 @@ public:
 	virtual ~KnapsackDecoder();
 
 	double decode(std::vector<double>& chromosome) const;
-	double computeFitness(const std::vector<bool>& solution) const;
+	template <typename SolutionContainer>
+	double computeFitness(const SolutionContainer& solution) const;
 	std::vector<bool> decodeSolution(std::vector<double>& chromosome) const;
 	void correctChromosome(std::vector<double>& chromosome, const std::vector<bool>& solution) const;
 	bool isValid(const std::vector<bool>& solution);

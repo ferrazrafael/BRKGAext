@@ -49,7 +49,8 @@ vector<bool> KnapsackDecoder::decodeSolution(std::vector<double>& chromosome) co
 	return solution;
 }
 
-double KnapsackDecoder::computeFitness(const std::vector<bool>& solution) const {
+template <typename SolutionContainer>
+double KnapsackDecoder::computeFitness(const SolutionContainer& solution) const {
 	double value_sum = 0.0;
 	for(unsigned i = 0; i < solution.size(); ++i){
 		if(solution[i]){
