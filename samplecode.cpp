@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
 			algorithm.exchangeElite(X_NUMBER);	// exchange top individuals
 		}
 
-		algorithm.applyHeuristic<vector<bool>>( bind(&KnapsackDecoder::twoSwap, decoder, placeholders::_1) );
+		algorithm.applyHeuristic<bool>( bind(&KnapsackDecoder::twoSwap, decoder, placeholders::_1) );
 	} while (generation < MAX_GENS);
 
 	cout << "Best solution found has objective value = "

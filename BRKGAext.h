@@ -31,8 +31,8 @@ public:
 	void initializeNonRandom(std::function<std::vector<unsigned> (unsigned)> initFunc);
 
 	// Apply Heuristic implemented by user
-	template <typename SolutionType>
-	void applyHeuristic(std::function< SolutionType (const SolutionType&) > heuristic);
+	template <typename ItemType>
+	void applyHeuristic(std::function< std::vector<ItemType> (const std::vector<ItemType>&) > heuristic);
 
 protected:
 	using BRKGA<Decoder, RNG>::n;
@@ -262,11 +262,11 @@ void BRKGAext<Decoder, RNG>::updateAdaptiveParameters() {
 }
 
 template<class Decoder, class RNG>
-template<typename SolutionType>
-void BRKGAext<Decoder, RNG>::applyHeuristic(std::function< SolutionType (const SolutionType&) > heuristic) {
+template<typename ItemType>
+void BRKGAext<Decoder, RNG>::applyHeuristic(std::function< std::vector<ItemType> (const std::vector<ItemType>&) > heuristic) {
 	for(int i = 0; i < int(K); ++i) {
 		for(int j = 0; j < int(p); ++j) {
-			SolutionType solution = refDecoder.decodeSolution((*current[i])(j)) ;
+			std::vector<ItemType> solution = refDecoder.decodeSolution((*current[i])(j)) ;
 			solution = heuristic(solution);
 			refDecoder.correctChromosome((*current[i])(j), solution);
 			current[i]->setFitness(j, refDecoder.decode((*current[i])(j)));

@@ -24,7 +24,7 @@ public:
 
 	// Local Search
 	std::vector<ItemType> twoSwap(const std::vector<ItemType>& solution);
-	std::vector<ItemType> kSwap(const std::vector<ItemType>& solution);
+	std::vector<ItemType> kSwap(const std::vector<ItemType>& solution, unsigned k);
 	std::vector<ItemType> bestInsertion(const std::vector<ItemType>& solution);
 	std::vector<ItemType> twoOpt(const std::vector<ItemType>& solution);
 

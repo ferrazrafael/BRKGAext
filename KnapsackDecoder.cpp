@@ -105,29 +105,41 @@ void KnapsackDecoder::correctChromosome(vector<double>& chromosome, const vector
 
 vector<bool> KnapsackDecoder::twoSwap(const vector<bool>& solution){
 	vector<bool> s = solution;
-	double value = 0.0;
-	double weight = 0.0;
+	vector< pair<unsigned, unsigned> > pairs(knapsack.getN());
 
-	double bestFitness = computeFitness(solution);
 	for(unsigned i = 0; i < solution.size(); ++i){
 		for(unsigned j = i+1; j < solution.size(); ++j){
-			swap(s[i], s[j]);
-
-			if(isValid(s)){ // checks if solution meets problem requirements
-				double fitness = computeFitness(s);
-				if(weight < knapsack.getW() && fitness > bestFitness){
-					bestFitness = fitness;
-				}
-				else{
-					swap(s[j], s[i]);
-				}
-			}
-			else{
-				swap(s[j], s[i]);
-			}
+			pairs[i].first = i;
+			pairs[i].second = j;
 		}
 	}
 
+	random_shuffle(pairs.begin(), pairs.end());
+
+	double bestFitness = computeFitness(solution);
+	for(unsigned i = 0; i < pairs.size();){
+		unsigned a = pairs[i].first;
+		unsigned b = pairs[i].second;
+		swap(s[a], s[b]);
+
+		if(isValid(s)){
+			double fitness = computeFitness(s);
+			if(fitness > bestFitness){
+				bestFitness = fitness;
+				random_shuffle(pairs.begin(), pairs.end());
+				i = 0;
+			}
+			else{
+				swap(s[b], s[a]);
+				++i;
+			}
+		}
+		else{
+			swap(s[b], s[a]);
+			++i;
+		}
+
+	}
 
 	return s;
 }
