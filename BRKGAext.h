@@ -22,10 +22,10 @@ public:
 	void evolve(unsigned generations = 1);
 
 	// Adaptive parameters
-	void useAdaptiveParameters();
+	void useAdaptiveParameters(bool on);
 
 	// Elite diversification
-	void useEliteDiversification(double diversityRate = 0.05);
+	void useEliteDiversification(bool on, double diversityRate = 0.05);
 
 	// Initialize population based on initial solution
 	void initializeNonRandom(std::function<std::vector<unsigned> (unsigned)> initFunc);
@@ -156,13 +156,13 @@ inline void BRKGAext< Decoder, RNG >::adaptiveEvolution(Population& curr, Popula
 }
 
 template<class Decoder, class RNG>
-void BRKGAext<Decoder, RNG>::useAdaptiveParameters() {
-	adaptiveParameters = true;
+void BRKGAext<Decoder, RNG>::useAdaptiveParameters(bool on) {
+	adaptiveParameters = on;
 }
 
 template<class Decoder, class RNG>
-void BRKGAext<Decoder, RNG>::useEliteDiversification(double _diversityRate) {
-	eliteDiversification = true;
+void BRKGAext<Decoder, RNG>::useEliteDiversification(bool on, double _diversityRate) {
+	eliteDiversification = on;
 	diversityRate = _diversityRate;
 }
 

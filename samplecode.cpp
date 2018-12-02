@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
 
 	BRKGAext< KnapsackDecoder, MTRand > algorithm(n, p, pe, pm, rhoe, decoder, rng, K, MAXT); // initialize the decoder
 
-	algorithm.useAdaptiveParameters();
+	algorithm.useAdaptiveParameters(true);
 	algorithm.useEliteDiversification(0.1);
 	//knapsack.initializeNonRandom(func);
 
