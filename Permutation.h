@@ -14,11 +14,12 @@ typedef unsigned ItemType;
 
 class Permutation {
 public:
-	Permutation();
-	virtual ~Permutation();
-	const std::vector<ItemType>& getItems() const;
-	ItemType getItem(unsigned i) const;
-	unsigned getN() const;
+	Permutation(std::vector<ItemType> items, unsigned n) : items(items), n(n) {};
+	virtual ~Permutation() {};
+
+	const std::vector<ItemType>& getItems() const { return items; };
+	ItemType getItem(unsigned i) const { return items[i]; };
+	unsigned getN() const { return n; };
 
 protected:
 	std::vector<ItemType> items;
