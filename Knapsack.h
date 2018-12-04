@@ -12,17 +12,16 @@
 
 class Knapsack {
 public:
-	Knapsack(unsigned n, const std::vector<double>& values, const std::vector<double>& weights, double W);
-	virtual ~Knapsack();
+	Knapsack(unsigned n, const std::vector<double>& values, const std::vector<double>& weights, double W)
+			: n(n), values(values), weights(weights), W(W) {};
+	virtual ~Knapsack() {};
 
-	unsigned getN() const;
-	const std::vector<double>& getValues() const;
-	double getValue(unsigned i) const;
-	double getW() const;
-	const std::vector<double>& getWeights() const;
-	double getWeight(unsigned i) const;
-
-
+	unsigned getN() const { return n; };
+	const std::vector<double>& getValues() const { return values; };
+	double getValue(unsigned i) const { return values[i]; };
+	double getW() const { return W; };
+	const std::vector<double>& getWeights() const { return weights; };
+	double getWeight(unsigned i) const { return weights[i]; };
 
 protected:
 	unsigned n; // number of items

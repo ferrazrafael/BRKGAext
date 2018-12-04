@@ -86,8 +86,8 @@ void BRKGAext< Decoder, RNG >::evolve(unsigned generations) {
 
 		for(unsigned i = 0; i < generations; ++i) {
 			for(unsigned j = 0; j < K; ++j) {
-				adaptiveEvolution(*(current[j]), *(previous[j]), j);	// First evolve the population (curr, next)
-				std::swap(current[j], previous[j]);		// Update (prev = curr; curr = prev == next)
+				adaptiveEvolution(*(current[j]), *(previous[j]), j);	// Evolve population
+				std::swap(current[j], previous[j]);		// Update generation
 			}
 		}
 		updateAdaptiveParameters();
@@ -129,9 +129,6 @@ inline void BRKGAext< Decoder, RNG >::adaptiveEvolution(Population& curr, Popula
 			const unsigned sourceParent = ((refRNG.rand() < adpRhoe[k]) ? eliteParent : noneliteParent);
 
 			next(i, j) = curr(curr.fitness[sourceParent].second, j);
-
-			//next(i, j) = (refRNG.rand() < rhoe) ? curr(curr.fitness[eliteParent].second, j) :
-			//		                              curr(curr.fitness[noneliteParent].second, j);
 		}
 
 		++i;

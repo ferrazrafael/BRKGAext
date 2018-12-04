@@ -77,6 +77,7 @@ void KnapsackDecoder::adjustSolution(vector<bool>& solution) const {
 	iota(items.begin(), items.end(), 0); // initialize vector with increasing values
 
 	random_shuffle(items.begin(), items.end());
+
 	double weight_sum = 0.0;
 	for(unsigned i = 0; i < items.size(); ++i){
 		if(weight_sum + knapsack.getWeight(i) < knapsack.getW()){
