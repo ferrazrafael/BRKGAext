@@ -12,16 +12,15 @@
 
 class Knapsack {
 public:
-	Knapsack(unsigned n, const std::vector<double>& values, const std::vector<double>& weights, double W)
-			: n(n), values(values), weights(weights), W(W) {};
+	Knapsack(unsigned n, const std::vector<double>& values, const std::vector<double>& weights, double W);
 	virtual ~Knapsack() {};
 
-	unsigned getN() const { return n; };
-	const std::vector<double>& getValues() const { return values; };
-	double getValue(unsigned i) const { return values[i]; };
-	double getW() const { return W; };
-	const std::vector<double>& getWeights() const { return weights; };
-	double getWeight(unsigned i) const { return weights[i]; };
+	unsigned getN() const;
+	const std::vector<double>& getValues() const;
+	double getValue(unsigned i) const;
+	double getW() const;
+	const std::vector<double>& getWeights() const;
+	double getWeight(unsigned i) const;
 
 protected:
 	unsigned n; // number of items
@@ -30,6 +29,32 @@ protected:
 	double W; // max weight supported by the Knapsack
 };
 
+Knapsack::Knapsack(unsigned _n, const std::vector<double>& _values, const std::vector<double>& _weights, double _W)
+					: n(_n), values(_values), weights(_weights), W(_W) {
+}
 
+unsigned Knapsack::getN() const {
+	return n;
+}
+
+const std::vector<double>& Knapsack::getValues() const {
+	return values;
+}
+
+double Knapsack::getValue(unsigned i) const {
+	return values[i];
+}
+
+double Knapsack::getW() const {
+	return W;
+}
+
+const std::vector<double>& Knapsack::getWeights() const {
+	return weights;
+}
+
+double Knapsack::getWeight(unsigned i) const {
+	return weights[i];
+}
 
 #endif /* KNAPSACK_H_ */
