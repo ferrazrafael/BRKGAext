@@ -59,8 +59,8 @@ protected:
 	std::vector<double> adpRhoe;
 
 	void diversifyElite();
-	double average(const Population& population, unsigned auxPe);
-	double standardDeviation(const Population& population, double avg, unsigned auxPe);
+	double eliteAverage(const Population& population, unsigned auxPe);
+	double eliteStandardDeviation(const Population& population, double avg, unsigned auxPe);
 	void updateAdaptiveParameters();
 	void adaptiveEvolution(Population& curr, Population& next, const unsigned k);
 	std::vector<double> generateChromosome(const std::vector<unsigned>& permutation);
@@ -175,13 +175,13 @@ void BRKGAext<Decoder, RNG>::diversifyElite() {
 	// for each population check if elite is to homogeneous
 	for(unsigned i = 0; i < K; ++i) {
 		// auxiliary 'pe' that uses adaptive pe if adaptiveParameters are on or default pe otherwise
-		unsigned auxPe = adaptiveParameters ? adpPe[i] : pe;
-		double avg = average(*current[i], auxPe);
-		double percent = (standardDeviation(*current[i], avg, auxPe) * 100.0) / current[i]->getBestFitness() / 100.0;
+		unsigned _pe = adaptiveParameters ? adpPe[i] : pe;
+		double avg = eliteAverage(*current[i], _pe);
+		double percent = (eliteStandardDeviation(*current[i], avg, _pe) * 100.0) / current[i]->getBestFitness() / 100.0;
 
 		if(percent < diversityRate) {
 			// replace elite chromosomes that are below diversity rate with mutants
-			for(unsigned j = 1; j < auxPe; ++j) {
+			for(unsigned j = 1; j < _pe; ++j) {
 				double percentualDeviation = fabs( (current[i]->getFitness(j) - avg) / avg );
 
 				if(percentualDeviation < diversityRate) {
@@ -193,7 +193,7 @@ void BRKGAext<Decoder, RNG>::diversifyElite() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(MAX_THREADS)
 #endif
-			for(int j = 1; j < int(auxPe); ++j) {
+			for(int j = 1; j < int(_pe); ++j) {
 				current[i]->setFitness( j, refDecoder.decode(current[i]->population[i]) );
 			}
 
@@ -204,22 +204,22 @@ void BRKGAext<Decoder, RNG>::diversifyElite() {
 }
 
 template< class Decoder, class RNG >
-double BRKGAext<Decoder, RNG>::average(const Population& population, unsigned auxPe) {
+double BRKGAext<Decoder, RNG>::eliteAverage(const Population& population, unsigned _pe) {
 	double avg = 0.0;
-	for(unsigned i = 0; i < auxPe; ++i) {
+	for(unsigned i = 0; i < _pe; ++i) {
 		avg += population.getFitness(i);
 	}
-	avg /= double(auxPe); // divide sum of all fitness by p
+	avg /= double(_pe); // divide sum of elite fitness by auxiliary 'pe'
 	return avg;
 }
 
 template< class Decoder, class RNG >
-double BRKGAext<Decoder, RNG>::standardDeviation(const Population& population, double avg, unsigned auxPe) {
+double BRKGAext<Decoder, RNG>::eliteStandardDeviation(const Population& population, double avg, unsigned _pe) {
 	double sum = 0.0;
-	for(unsigned i = 0; i < auxPe; ++i) {
+	for(unsigned i = 0; i < _pe; ++i) {
 		sum += population.getFitness(i) - avg;
 	}
-	sum /= double(auxPe); // divide sum of all fitness by p
+	sum /= double(_pe); // divide sum of elite fitness by auxiliary 'pe'
 
 	return sqrt(sum);
 }
