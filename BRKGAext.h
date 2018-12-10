@@ -30,7 +30,7 @@ public:
 	// Apply Heuristic implemented by user
 	template <typename ItemType>
 	void applyHeuristic(std::function< std::vector<ItemType> (const std::vector<ItemType>&) > heuristic);
-	
+
 	// Initialize population based on initial solution
 	void initializeNonRandom(std::function< std::vector<unsigned> (unsigned) > initFunc);
 
@@ -70,9 +70,9 @@ template< class Decoder, class RNG >
 BRKGAext<Decoder, RNG>::BRKGAext(unsigned _n, unsigned _p, double _pe, double _pm, double _rhoe,
 		const Decoder& decoder, RNG& rng, unsigned _K, unsigned MAX) :
 		BRKGA<Decoder, RNG>(_n, _p, _pe, _pm, _rhoe, decoder, rng, _K, MAX) {
-	adpPe.assign(K, pe);
-	adpPm.assign(K, pm);
-	adpRhoe.assign(K, rhoe);
+	adpPe.assign(K, pe); // assigns 'pe' value K times
+	adpPm.assign(K, pm); // assigns 'pm' value K times
+	adpRhoe.assign(K, rhoe); // assigns 'rhoe' value K times
 }
 
 template< class Decoder, class RNG >
@@ -237,23 +237,23 @@ void BRKGAext<Decoder, RNG>::updateAdaptiveParameters() {
 
 		double bestFitness = current[i]->getBestFitness();
 
-		// generating adaptive pm's
-		double k = (pm / double(p)) / 2;
-		double avg = 0.0;
-		for(unsigned j = 0; j < p; ++j) {
-			avg += fabs(k * (current[i]->getFitness(j) - bestFitness) / (avgFitness - bestFitness)) ;
-		}
-		avg /= double(p); // divide sum of all Pm's by p
-		adpPm[i] = unsigned(p * avg);
-
 		// generating adaptive pe's
-		k = (pe / double(p)) / 2;
-		avg = 0.0;
+		double k = (pe / double(p)) / 2;
+		double avg = 0.0;
 		for(unsigned j = 0; j < p; ++j) {
 			avg += fabs( k * (current[i]->getFitness(j) - bestFitness) / (avgFitness - bestFitness) );
 		}
 		avg /= double(p); // divide sum of all Pm's by p
 		adpPe[i] = unsigned(p * avg);
+
+		// generating adaptive pm's
+		k = (pm / double(p)) / 2;
+		avg = 0.0;
+		for(unsigned j = 0; j < p; ++j) {
+			avg += fabs(k * (current[i]->getFitness(j) - bestFitness) / (avgFitness - bestFitness)) ;
+		}
+		avg /= double(p); // divide sum of all Pm's by p
+		adpPm[i] = unsigned(p * avg);
 
 		// generating adaptive rhoe's
 		avg = 0.0;
