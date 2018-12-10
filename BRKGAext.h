@@ -174,8 +174,8 @@ template< class Decoder, class RNG >
 void BRKGAext<Decoder, RNG>::diversifyElite() {
 	// for each population check if elite is to homogeneous
 	for(unsigned i = 0; i < K; ++i) {
-		unsigned _pe = adaptiveParameters ? adpPe[i] : pe;
 		// auxiliary 'pe' that uses adaptive pe if adaptiveParameters are on or default pe otherwise
+		unsigned _pe = adaptiveParameters ? adpPe[i] : pe;
 
 		double avg = eliteAverage(*current[i], _pe);
 		double percent = (eliteStandardDeviation(*current[i], avg, _pe) * 100.0) / current[i]->getBestFitness() / 100.0;
