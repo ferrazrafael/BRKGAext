@@ -49,11 +49,6 @@ double PermutationDecoder::decode(std::vector<double>& chromosome) const {
 	return computeFitness(solution);
 }
 
-template <typename SolutionContainer>
-double PermutationDecoder::computeFitness(const SolutionContainer& solution) const {
-	// TODO API user implements fitness computation based on problem data
-}
-
 std::vector<ItemType> PermutationDecoder::decodeSolution(std::vector<double>& chromosome) const {
 	std::vector<ItemType> solution = permutation.getItems();
 	std::vector< std::pair<double, ItemType> > pairs( permutation.getN() );
@@ -92,15 +87,24 @@ void PermutationDecoder::correctChromosome(std::vector<double>& chromosome, cons
 	sort(pairs.begin(), pairs.end(),
 			[](std::pair<double, ItemType> a, std::pair<double, ItemType> b) { return a.first < b.first; } );
 
-	for(unsigned i = 0; i < permutation.getN(); ++i){
-		if(pairs[i].second != solution[i]){
-			for(unsigned j = i+1; j < permutation.getN(); ++j){
-				if(solution[i] == pairs[j].first){
+	for(unsigned i = 0; i < permutation.getN(); ++i)
+		if(pairs[i].second != solution[i])
+			for(unsigned j = i+1; j < permutation.getN(); ++j)
+				if(solution[i] == pairs[j].second)
 					std::swap(chromosome[i], chromosome[j]);
-				}
-			}
-		}
-	}
+}
+
+template <typename SolutionContainer>
+double PermutationDecoder::computeFitness(const SolutionContainer& solution) const {
+	// TODO API user implements fitness computation based on problem data
+}
+
+bool PermutationDecoder::isValid(const std::vector<ItemType>& solution) const {
+	// TODO Implement problem requirements validation
+}
+
+void PermutationDecoder::adjustSolution(std::vector<ItemType>& solution) const {
+	// TODO Implement to adjust invalid solution
 }
 
 std::vector<ItemType> PermutationDecoder::twoSwap(const std::vector<ItemType>& solution) {
@@ -118,6 +122,7 @@ std::vector<ItemType> PermutationDecoder::twoSwap(const std::vector<ItemType>& s
 
 	double bestFitness = computeFitness(solution);
 	for(unsigned i = 0; i < pairs.size();){
+		// swap
 		unsigned a = pairs[i].first;
 		unsigned b = pairs[i].second;
 		std::swap(s[a], s[b]);
@@ -130,11 +135,13 @@ std::vector<ItemType> PermutationDecoder::twoSwap(const std::vector<ItemType>& s
 				i = 0;
 			}
 			else{
+				// undo swap
 				std::swap(s[b], s[a]);
 				++i;
 			}
 		}
 		else{
+			// undo swap
 			std::swap(s[b], s[a]);
 			++i;
 		}
@@ -142,10 +149,6 @@ std::vector<ItemType> PermutationDecoder::twoSwap(const std::vector<ItemType>& s
 	}
 
 	return s;
-}
-
-bool PermutationDecoder::isValid(const std::vector<ItemType>& solution) const {
-	// TODO Implement problem requirements validation
 }
 
 std::vector<ItemType> PermutationDecoder::kSwap(const std::vector<ItemType>& solution, unsigned k) {
@@ -264,10 +267,6 @@ std::vector<ItemType> PermutationDecoder::twoOpt(const std::vector<ItemType>& so
 	}
 
 	return s;
-}
-
-void PermutationDecoder::adjustSolution(std::vector<ItemType>& solution) const {
-	// TODO Implement to adjust invalid solution
 }
 
 #endif /* PERMUTATIONDECODER_H_ */
