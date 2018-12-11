@@ -58,12 +58,12 @@ protected:
 	std::vector<unsigned> dynPm;
 	std::vector<double> dynRhoe;
 
+	std::vector<double> generateChromosome(const std::vector<unsigned>& permutation);
 	void diversifyElite();
 	double eliteAverage(const Population& population, unsigned auxPe);
 	double eliteStandardDeviation(const Population& population, double avg, unsigned auxPe);
 	void updateDynamicOperators();
-	void adaptiveEvolution(Population& curr, Population& next, const unsigned k);
-	std::vector<double> generateChromosome(const std::vector<unsigned>& permutation);
+	void dynamicEvolution(Population& curr, Population& next, const unsigned k);
 };
 
 template< class Decoder, class RNG >
@@ -87,7 +87,7 @@ void BRKGAext< Decoder, RNG >::evolve(unsigned generations) {
 
 		for(unsigned i = 0; i < generations; ++i) {
 			for(unsigned j = 0; j < K; ++j) {
-				adaptiveEvolution(*(current[j]), *(previous[j]), j);	// Evolve population
+				dynamicEvolution(*(current[j]), *(previous[j]), j);	// Evolve population
 				std::swap(current[j], previous[j]);		// Update generation
 			}
 		}
@@ -224,46 +224,7 @@ double BRKGAext<Decoder, RNG>::eliteStandardDeviation(const Population& populati
 }
 
 template< class Decoder, class RNG >
-void BRKGAext<Decoder, RNG>::updateDynamicOperators() {
-	// update operators
-	for(unsigned i = 0; i < K; ++i) {
-		double avgFitness = 0.0;
-		for(unsigned j = 0; j < p; ++j) {
-			avgFitness += current[i]->getFitness(j);
-		}
-		avgFitness /= double(p); // divide sum of all fitness by p
-
-		double bestFitness = current[i]->getBestFitness();
-
-		// generating adaptive pe's
-		double k = double(pe) / 2;
-		double avg = 0.0;
-		for(unsigned j = 0; j < p; ++j) {
-			avg += fabs( k * (current[i]->getFitness(j) - bestFitness) / (avgFitness - bestFitness) );
-		}
-		avg /= double(p); // divide sum of all Pm's by p
-		dynPe[i] = unsigned(avg);
-
-		// generating adaptive pm's
-		k = double(pm);
-		avg = 0.0;
-		for(unsigned j = 0; j < p; ++j) {
-			avg += fabs( k / (current[i]->getFitness(j) - bestFitness) ) ;
-		}
-		avg /= double(p); // divide sum of all Pm's by p
-		dynPm[i] = unsigned(avg);
-
-		// generating adaptive rhoe's
-		avg = 0.0;
-		for(unsigned j = 0; j < p; ++j) {
-			avg += 0.5 + fabs( 0.25 * (current[i]->getFitness(j) - bestFitness) / (avgFitness - bestFitness) );
-		}
-		dynRhoe[i] = avg / double(p); // divide sum of all Rhoe's by p
-	}
-}
-
-template< class Decoder, class RNG >
-void BRKGAext< Decoder, RNG >::adaptiveEvolution(Population& curr, Population& next, const unsigned k) {
+void BRKGAext< Decoder, RNG >::dynamicEvolution(Population& curr, Population& next, const unsigned k) {
 	// We now will set every chromosome of 'current', iterating with 'i':
 	unsigned i = 0;	// Iterate chromosome by chromosome
 	unsigned j = 0;	// Iterate allele by allele
@@ -311,6 +272,45 @@ void BRKGAext< Decoder, RNG >::adaptiveEvolution(Population& curr, Population& n
 
 	// Now we must sort 'current' by fitness, since things might have changed:
 	next.sortFitness();
+}
+
+template< class Decoder, class RNG >
+void BRKGAext<Decoder, RNG>::updateDynamicOperators() {
+	// update operators
+	for(unsigned i = 0; i < K; ++i) {
+		double avgFitness = 0.0;
+		for(unsigned j = 0; j < p; ++j) {
+			avgFitness += current[i]->getFitness(j);
+		}
+		avgFitness /= double(p); // divide sum of all fitness by p
+
+		double bestFitness = current[i]->getBestFitness();
+
+		// generating adaptive pe's
+		double k = double(pe) / 2;
+		double avg = 0.0;
+		for(unsigned j = 0; j < p; ++j) {
+			avg += fabs( k * (current[i]->getFitness(j) - bestFitness) / (avgFitness - bestFitness) );
+		}
+		avg /= double(p); // divide sum of all Pm's by p
+		dynPe[i] = unsigned(avg);
+
+		// generating adaptive pm's
+		k = double(pm);
+		avg = 0.0;
+		for(unsigned j = 0; j < p; ++j) {
+			avg += fabs( k / (current[i]->getFitness(j) - bestFitness) ) ;
+		}
+		avg /= double(p); // divide sum of all Pm's by p
+		dynPm[i] = unsigned(avg);
+
+		// generating adaptive rhoe's
+		avg = 0.0;
+		for(unsigned j = 0; j < p; ++j) {
+			avg += 0.5 + fabs( 0.25 * (current[i]->getFitness(j) - bestFitness) / (avgFitness - bestFitness) );
+		}
+		dynRhoe[i] = avg / double(p); // divide sum of all Rhoe's by p
+	}
 }
 
 #endif /* BRKGAEXT_H_ */
