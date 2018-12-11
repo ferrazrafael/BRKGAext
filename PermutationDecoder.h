@@ -29,7 +29,7 @@ public:
 	std::vector<ItemType> twoOpt(const std::vector<ItemType>& solution);
 
 protected:
-	const Permutation permutation;
+	const Permutation permutation; // Problem data
 
 	template <typename SolutionContainer>
 	double computeFitness(const SolutionContainer& solution) const;
@@ -68,7 +68,7 @@ std::vector<ItemType> PermutationDecoder::decodeSolution(std::vector<double>& ch
 			[](std::pair<double, ItemType> a, std::pair<double, ItemType> b) { return a.first < b.first; } );
 
 	// copy items on order to solution
-	transform(pairs.begin(), pairs.end(), solution.begin(),
+	std::transform(pairs.begin(), pairs.end(), solution.begin(),
 			[](std::pair<double, ItemType> p) { return p.second; } );
 
 	 if(!isValid(solution)){
