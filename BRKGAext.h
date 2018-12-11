@@ -21,8 +21,8 @@ public:
 
 	void evolve(unsigned generations = 1);
 
-	// Adaptive parameters
-	void useAdaptiveParameters(bool on);
+	// DynamicOperator
+	void useDynamicOperators(bool on);
 
 	// Elite diversification
 	void useEliteDiversification(bool on, double diversityRate = 0.05);
@@ -32,7 +32,7 @@ public:
 	void applyHeuristic(std::function< std::vector<ItemType> (const std::vector<ItemType>&) > heuristic);
 
 	// Initialize population based on initial solution
-	void initializeNonRandom(std::function< std::vector<unsigned> (unsigned) > initFunc);
+	void heuristicInitialization(std::function< std::vector<unsigned> (unsigned) > heuristicInit);
 
 protected:
 	// Just to shorten base class variable use
@@ -53,15 +53,15 @@ protected:
 	double diversityRate = 0.0;
 
 	// Adaptive parameters
-	bool adaptiveParameters = false;
-	std::vector<unsigned> adpPe;
-	std::vector<unsigned> adpPm;
-	std::vector<double> adpRhoe;
+	bool dynamicOperators = false;
+	std::vector<unsigned> dynPe;
+	std::vector<unsigned> dynPm;
+	std::vector<double> dynRhoe;
 
 	void diversifyElite();
 	double eliteAverage(const Population& population, unsigned auxPe);
 	double eliteStandardDeviation(const Population& population, double avg, unsigned auxPe);
-	void updateAdaptiveParameters();
+	void updateDynamicOperators();
 	void adaptiveEvolution(Population& curr, Population& next, const unsigned k);
 	std::vector<double> generateChromosome(const std::vector<unsigned>& permutation);
 };
@@ -70,9 +70,9 @@ template< class Decoder, class RNG >
 BRKGAext<Decoder, RNG>::BRKGAext(unsigned _n, unsigned _p, double _pe, double _pm, double _rhoe,
 		const Decoder& decoder, RNG& rng, unsigned _K, unsigned MAX) :
 		BRKGA<Decoder, RNG>(_n, _p, _pe, _pm, _rhoe, decoder, rng, _K, MAX) {
-	adpPe.assign(K, pe); // assigns 'pe' value K times
-	adpPm.assign(K, pm); // assigns 'pm' value K times
-	adpRhoe.assign(K, rhoe); // assigns 'rhoe' value K times
+	dynPe.assign(K, pe); // assigns 'pe' value K times
+	dynPm.assign(K, pm); // assigns 'pm' value K times
+	dynRhoe.assign(K, rhoe); // assigns 'rhoe' value K times
 }
 
 template< class Decoder, class RNG >
@@ -82,7 +82,7 @@ BRKGAext<Decoder, RNG>::~BRKGAext() {
 
 template< class Decoder, class RNG >
 void BRKGAext< Decoder, RNG >::evolve(unsigned generations) {
-	if(adaptiveParameters){
+	if(dynamicOperators){
 		if(generations == 0) { throw std::range_error("Cannot evolve for 0 generations."); }
 
 		for(unsigned i = 0; i < generations; ++i) {
@@ -91,7 +91,7 @@ void BRKGAext< Decoder, RNG >::evolve(unsigned generations) {
 				std::swap(current[j], previous[j]);		// Update generation
 			}
 		}
-		updateAdaptiveParameters();
+		updateDynamicOperators();
 	}
 	else {
 		BRKGA<Decoder, RNG>::evolve(generations);
@@ -103,8 +103,8 @@ void BRKGAext< Decoder, RNG >::evolve(unsigned generations) {
 }
 
 template<class Decoder, class RNG>
-void BRKGAext<Decoder, RNG>::useAdaptiveParameters(bool on) {
-	adaptiveParameters = on;
+void BRKGAext<Decoder, RNG>::useDynamicOperators(bool on) {
+	dynamicOperators = on;
 }
 
 template<class Decoder, class RNG>
@@ -127,14 +127,12 @@ void BRKGAext<Decoder, RNG>::applyHeuristic(std::function< std::vector<ItemType>
 }
 
 template< class Decoder, class RNG >
-void BRKGAext< Decoder, RNG >::initializeNonRandom(std::function<std::vector<unsigned> (unsigned)> initFunc) {
-	using std::range_error;
-
+void BRKGAext< Decoder, RNG >::heuristicInitialization(std::function<std::vector<unsigned> (unsigned)> heuristicInit) {
 	for(unsigned i = 0; i < K; ++i) {
 		for(unsigned j = 0; j < p; ++j) {
-			std::vector<unsigned> permutation = initFunc(n);
+			std::vector<unsigned> permutation = heuristicInit(n);
 			if(permutation.size() != n) {
-				throw range_error("Permutation size differs from chromosome size.");
+				throw std::range_error("Permutation size differs from chromosome size.");
 			}
 
 			(*current[i])(j) = generateChromosome(permutation);
@@ -174,8 +172,8 @@ template< class Decoder, class RNG >
 void BRKGAext<Decoder, RNG>::diversifyElite() {
 	// for each population check if elite is to homogeneous
 	for(unsigned i = 0; i < K; ++i) {
-		// auxiliary 'pe' that uses adaptive pe if adaptiveParameters are on or default pe otherwise
-		unsigned _pe = adaptiveParameters ? adpPe[i] : pe;
+		// auxiliary 'pe' that uses dynamic pe if dynamicOperators are on or default pe otherwise
+		unsigned _pe = dynamicOperators ? dynPe[i] : pe;
 
 		double avg = eliteAverage(*current[i], _pe);
 		double percent = (eliteStandardDeviation(*current[i], avg, _pe) * 100.0) / current[i]->getBestFitness() / 100.0;
@@ -226,8 +224,8 @@ double BRKGAext<Decoder, RNG>::eliteStandardDeviation(const Population& populati
 }
 
 template< class Decoder, class RNG >
-void BRKGAext<Decoder, RNG>::updateAdaptiveParameters() {
-	// update parameters
+void BRKGAext<Decoder, RNG>::updateDynamicOperators() {
+	// update operators
 	for(unsigned i = 0; i < K; ++i) {
 		double avgFitness = 0.0;
 		for(unsigned j = 0; j < p; ++j) {
@@ -238,29 +236,29 @@ void BRKGAext<Decoder, RNG>::updateAdaptiveParameters() {
 		double bestFitness = current[i]->getBestFitness();
 
 		// generating adaptive pe's
-		double k = (pe / double(p)) / 2;
+		double k = double(pe) / 2;
 		double avg = 0.0;
 		for(unsigned j = 0; j < p; ++j) {
 			avg += fabs( k * (current[i]->getFitness(j) - bestFitness) / (avgFitness - bestFitness) );
 		}
 		avg /= double(p); // divide sum of all Pm's by p
-		adpPe[i] = unsigned(p * avg);
+		dynPe[i] = unsigned(avg);
 
 		// generating adaptive pm's
-		k = (pm / double(p)) / 2;
+		k = double(pm);
 		avg = 0.0;
 		for(unsigned j = 0; j < p; ++j) {
-			avg += fabs(k * (current[i]->getFitness(j) - bestFitness) / (avgFitness - bestFitness)) ;
+			avg += fabs( k / (current[i]->getFitness(j) - bestFitness) ) ;
 		}
 		avg /= double(p); // divide sum of all Pm's by p
-		adpPm[i] = unsigned(p * avg);
+		dynPm[i] = unsigned(avg);
 
 		// generating adaptive rhoe's
 		avg = 0.0;
 		for(unsigned j = 0; j < p; ++j) {
 			avg += 0.5 + fabs( 0.25 * (current[i]->getFitness(j) - bestFitness) / (avgFitness - bestFitness) );
 		}
-		adpRhoe[i] = avg / double(p); // divide sum of all Rhoe's by p
+		dynRhoe[i] = avg / double(p); // divide sum of all Rhoe's by p
 	}
 }
 
@@ -271,7 +269,7 @@ void BRKGAext< Decoder, RNG >::adaptiveEvolution(Population& curr, Population& n
 	unsigned j = 0;	// Iterate allele by allele
 
 	// 2. The 'pe' best chromosomes are maintained, so we just copy these into 'current':
-	while(i < adpPe[k]) {
+	while(i < dynPe[k]) {
 		for(j = 0 ; j < n; ++j) { next(i,j) = curr(curr.fitness[i].second, j); }
 
 		next.fitness[i].first = curr.fitness[i].first;
@@ -280,16 +278,16 @@ void BRKGAext< Decoder, RNG >::adaptiveEvolution(Population& curr, Population& n
 	}
 
 	// 3. We'll mate 'p - pe - pm' pairs; initially, i = pe, so we need to iterate until i < p - pm:
-	while(i < p - adpPm[k]) {
+	while(i < p - dynPm[k]) {
 		// Select an elite parent:
-		const unsigned eliteParent = (refRNG.randInt(adpPe[k] - 1));
+		const unsigned eliteParent = (refRNG.randInt(dynPe[k] - 1));
 
 		// Select a non-elite parent:
-		const unsigned noneliteParent = adpPe[k] + (refRNG.randInt(p - adpPe[k] - 1));
+		const unsigned noneliteParent = dynPe[k] + (refRNG.randInt(p - dynPe[k] - 1));
 
 		// Mate:
 		for(j = 0; j < n; ++j) {
-			const unsigned sourceParent = ((refRNG.rand() < adpRhoe[k]) ? eliteParent : noneliteParent);
+			const unsigned sourceParent = ((refRNG.rand() < dynRhoe[k]) ? eliteParent : noneliteParent);
 
 			next(i, j) = curr(curr.fitness[sourceParent].second, j);
 		}
@@ -307,7 +305,7 @@ void BRKGAext< Decoder, RNG >::adaptiveEvolution(Population& curr, Population& n
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(MAX_THREADS)
 #endif
-	for(int i = int(adpPe[k]); i < int(p); ++i) {
+	for(int i = int(dynPe[k]); i < int(p); ++i) {
 		next.setFitness( i, refDecoder.decode(next.population[i]) );
 	}
 
