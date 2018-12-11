@@ -59,10 +59,11 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-/*std::vector<unsigned> func(unsigned n){
+std::vector<unsigned> func(unsigned n){
 	std::vector<unsigned> permutation(n);
 	for(unsigned i = n; i > 0; --i)
 		permutation[i-1] = n-i;
 
 	return permutation;
-};*/
+};
+
