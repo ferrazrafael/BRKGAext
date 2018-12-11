@@ -33,7 +33,7 @@ protected:
 
 	template <typename SolutionContainer>
 	double computeFitness(const SolutionContainer& solution) const;
-	bool isValid(const std::vector<ItemType>& solution);
+	bool isValid(const std::vector<ItemType>& solution) const;
 	void adjustSolution(std::vector<ItemType>& solution) const;
 };
 
@@ -71,14 +71,10 @@ std::vector<ItemType> PermutationDecoder::decodeSolution(std::vector<double>& ch
 	transform(pairs.begin(), pairs.end(), solution.begin(),
 			[](std::pair<double, ItemType> p) { return p.second; } );
 
-	/*
-	 * TODO Implement if the problem has restrictions
-	 *
-	 if(Some restriction is violated){
+	 if(!isValid(solution)){
 		adjustSolution(solution);
 		correctChromosome(chromosome, solution);
 	}
-	 */
 
 	return solution;
 }
@@ -148,7 +144,7 @@ std::vector<ItemType> PermutationDecoder::twoSwap(const std::vector<ItemType>& s
 	return s;
 }
 
-bool PermutationDecoder::isValid(const std::vector<ItemType>& solution) {
+bool PermutationDecoder::isValid(const std::vector<ItemType>& solution) const {
 	// TODO Implement problem requirements validation
 }
 
